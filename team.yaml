@@ -1,0 +1,47 @@
+name: company-six-surface-team
+instructions:
+  file: docs/team.md
+roles:
+  direction:
+    title: Direction
+    file: roles/direction.md
+  engineering:
+    title: Engineering
+    file: roles/engineering.md
+  operations:
+    title: Operations
+    file: roles/operations.md
+  support:
+    title: Support
+    file: roles/support.md
+  outreach:
+    title: Outreach
+    file: roles/outreach.md
+  analytics:
+    title: Analytics
+    file: roles/analytics.md
+agents:
+  direction:
+    role_name: direction
+    default_name: director
+    default_alias: direction
+  engineering:
+    role_name: engineering
+    default_name: engineer
+    default_alias: engineering
+  operations:
+    role_name: operations
+    default_name: operator
+    default_alias: operations
+  support:
+    role_name: support
+    default_name: support
+    default_alias: support
+  outreach:
+    role_name: outreach
+    default_name: outreach
+    default_alias: outreach
+  analytics:
+    role_name: analytics
+    default_name: analyst
+    default_alias: analytics
