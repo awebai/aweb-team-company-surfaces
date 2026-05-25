@@ -48,6 +48,11 @@ Why:
 
 Bootstrap creates at least one developer worktree agent when team.yaml declares worktrees:. Add more developers later with aw workspace add-worktree.
 
+Code-edit policy:
+
+- Do code changes in the developer worktree agent directories under worktrees/.
+- Treat the work/ symlink in the six surface workspaces as a shared context pointer, not the concurrency boundary.
+
 Operational note: worktree agents are local-only identities. They are meant for parallel local work on the repo, not for global addressability.
 
 ## Working in pairs (optional)

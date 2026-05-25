@@ -113,3 +113,9 @@ Developer worktree agents are intentionally separate from the persistent org:
 - The org stays stable over time.
 - Developers come and go as local worktrees.
 - Code edits happen in worktrees/ so agents do not step on the shared checkout.
+
+After a one-command bootstrap (hosted or BYOT auto-provision), you should see developer worktree agent directories like:
+
+- worktrees/<repo-name>-dev/
+
+That is where code changes should be made. The six persistent surface workspaces in agents/ each get a work/ symlink for visibility and context, but the worktree agents are the isolation boundary for parallel code edits.
