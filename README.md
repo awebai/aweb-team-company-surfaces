@@ -15,8 +15,30 @@ aw version
 
 Run from a directory that is **not already inside a git repo/worktree** (the command refuses to clone a template into an existing git worktree).
 
+This template models a stable company org (six persistent “surface” agents) plus at least one developer worktree agent for code changes.
+
+### Choose the work repo input (XOR)
+
+You must pass exactly one of:
+
+- `--work-directory <path>` (use an existing local directory)
+- `--work-repo-url <url-or-local-path>` (bootstrap will git clone into `./worktrees/<derived-name>/` inside the template checkout)
+
+Because this template declares worktree agents in `team.yaml`, the work directory must be a git repo.
+### Recommended: clone the work repo into worktrees/
+
 ```bash
-aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git --yes
+aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
+  --yes \
+  --work-repo-url https://github.com/<org>/<repo>.git
+```
+
+### Alternative: use an existing local work directory
+
+```bash
+aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
+  --yes \
+  --work-directory /path/to/your/repo
 ```
 
 This clones `./aweb-team-company-surfaces/` and bootstraps one workspace per responsibility under:
@@ -68,7 +90,7 @@ Solutions:
 
 - **Pi**:
   ```bash
-  pi install npm:@awebai/pi
+  pi install npm:@awebai/pi@latest
   ```
 
 ## Structure
@@ -80,7 +102,14 @@ docs/team.md               # shared team instructions installed with aw instruct
 
 roles/*.md                 # operational playbooks installed as aw roles bundle
 
-agents/<responsibility>/   # one workspace per responsibility area
+agents/<responsibility>/   # one workspace per persistent responsibility area
+worktrees/                 # git worktrees + local worktree agents (code changes)
 ```
 
 Responsibilities are directory names (e.g. `engineering`, `operations`), not fixed identities. `team.yaml` provides suggested defaults; change them during bootstrap if you want.
+
+Developer worktree agents are intentionally separate from the persistent org:
+
+- The org stays stable over time.
+- Developers come and go as local worktrees.
+- Code edits happen in worktrees/ so agents do not step on the shared checkout.

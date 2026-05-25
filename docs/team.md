@@ -36,6 +36,20 @@ Minimum expectations:
 - Outreach keeps the publishing/outreach pipeline moving and captures what comes back.
 - Analytics produces periodic signal briefs and maintains an instrumentation gap list.
 
+## Developer worktrees (recommended for code)
+
+This template keeps the six surface agents persistent, and puts code changes in developer worktrees.
+
+Why:
+
+- Surface agents stay stable (direction/engineering/operations/support/outreach/analytics).
+- Developers can come and go without changing the org layout.
+- Each developer works in an isolated git worktree to avoid collisions.
+
+Bootstrap creates at least one developer worktree agent when team.yaml declares worktrees:. Add more developers later with aw workspace add-worktree.
+
+Operational note: worktree agents are local-only identities. They are meant for parallel local work on the repo, not for global addressability.
+
 ## Working in pairs (optional)
 
-For large scoped work, use task-scoped builder/reviewer pairs (rather than adding permanent agents). Use `aw workspace add-worktree` to create temporary workspaces.
+For large scoped work, use task-scoped builder/reviewer pairs (rather than adding permanent agents). Use aw workspace add-worktree to create temporary workspaces.

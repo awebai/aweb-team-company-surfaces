@@ -20,6 +20,9 @@ roles:
   analytics:
     title: Analytics
     file: roles/analytics.md
+  developer:
+    title: Developer
+    file: roles/developer.md
 agents:
   direction:
     role_name: direction
@@ -45,3 +48,7 @@ agents:
     role_name: analytics
     default_name: analyst
     default_alias: analytics
+worktrees:
+  - name: developer
+    role_name: developer
+    alias: dev
