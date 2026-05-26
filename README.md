@@ -29,7 +29,6 @@ Because this template declares worktree agents in `team.yaml`, the work director
 
 ```bash
 aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
-  --yes \
   --username <username> \
   --work-repo-url https://github.com/<org>/<repo>.git
 ```
@@ -38,14 +37,13 @@ aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
 
 ```bash
 aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
-  --yes \
   --username <username> \
   --work-directory /path/to/your/repo
 ```
 
-If you want hosted onboarding prompts, omit `--yes` and `--username`.
-If you use `--yes`, provide an explicit team source such as `--username`,
-`AWEB_API_KEY`, `--invite-token`, or `--namespace`/`--team`.
+If you want hosted onboarding prompts, omit `--username`.
+Default agent names from `team.yaml` are used automatically; pass
+`--ask-for-agent-names` only when you want to rename them interactively.
 
 This clones `./aweb-team-company-surfaces/` and bootstraps one workspace per responsibility under:
 
