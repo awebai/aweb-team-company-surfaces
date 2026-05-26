@@ -30,6 +30,7 @@ Because this template declares worktree agents in `team.yaml`, the work director
 ```bash
 aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
   --yes \
+  --username <username> \
   --work-repo-url https://github.com/<org>/<repo>.git
 ```
 
@@ -38,8 +39,13 @@ aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
 ```bash
 aw team bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
   --yes \
+  --username <username> \
   --work-directory /path/to/your/repo
 ```
+
+If you want hosted onboarding prompts, omit `--yes` and `--username`.
+If you use `--yes`, provide an explicit team source such as `--username`,
+`AWEB_API_KEY`, `--invite-token`, or `--namespace`/`--team`.
 
 This clones `./aweb-team-company-surfaces/` and bootstraps one workspace per responsibility under:
 
@@ -119,3 +125,7 @@ After a one-command bootstrap (hosted or BYOT auto-provision), you should see de
 - worktrees/<repo-name>-dev/
 
 That is where code changes should be made. The six persistent surface workspaces in agents/ each get a work/ symlink for visibility and context, but the worktree agents are the isolation boundary for parallel code edits.
+
+## License
+
+This template is open source under the [MIT License](./LICENSE).
