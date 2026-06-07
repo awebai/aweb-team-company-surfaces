@@ -26,29 +26,45 @@ roles:
 agents:
   direction:
     role_name: direction
-    default_name: director
-    default_alias: direction
+    identity_scope: local
+    home_template: home/direction
+    work: repo_root
   engineering:
     role_name: engineering
-    default_name: engineer
-    default_alias: engineering
+    identity_scope: local
+    home_template: home/engineering
+    work: repo_root
   operations:
     role_name: operations
-    default_name: operator
-    default_alias: operations
+    identity_scope: local
+    home_template: home/operations
+    work: repo_root
   support:
     role_name: support
-    default_name: support
-    default_alias: support
+    identity_scope: local
+    home_template: home/support
+    work: repo_root
   outreach:
     role_name: outreach
-    default_name: outreach
-    default_alias: outreach
+    identity_scope: local
+    home_template: home/outreach
+    work: repo_root
   analytics:
     role_name: analytics
-    default_name: analyst
-    default_alias: analytics
-worktrees:
-  - name: developer
+    identity_scope: local
+    home_template: home/analytics
+    work: repo_root
+  developer:
     role_name: developer
-    alias: dev
+    identity_scope: local
+    home_template: home/developer
+    work: git_worktree
+naming:
+  local_alias:
+    sequence: classic-name
+    pattern: "{user}-{classic-name}"
+  global_alias:
+    sequence: classic-name
+    pattern: "{user}-{classic-name}"
+  global_name:
+    pattern: "{user}-{responsibility}"
