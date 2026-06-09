@@ -1,0 +1,31 @@
+schema_version: 1
+name: company-surfaces
+summary: Company operating pattern with durable surface souls and explicit developer worktree instances.
+resources:
+  instructions: resources/instructions.md
+  roles:
+    direction: resources/roles/direction.md
+    engineering: resources/roles/engineering.md
+    operations: resources/roles/operations.md
+    support: resources/roles/support.md
+    outreach: resources/roles/outreach.md
+    analytics: resources/roles/analytics.md
+    developer: resources/roles/developer.md
+  souls:
+    direction: resources/souls/direction
+    engineering: resources/souls/engineering
+    operations: resources/souls/operations
+    support: resources/souls/support
+    outreach: resources/souls/outreach
+    analytics: resources/souls/analytics
+    developer: resources/souls/developer
+  playbooks:
+    deploy: examples/deploy.md
+    create-instance: examples/create-instance.md
+skills:
+  - skills/self-maintenance/SKILL.md
+  - skills/spawn-instance/SKILL.md
+adapters:
+  claude: adapters/claude/README.md
+  codex: adapters/codex/README.md
+  pi: adapters/pi/README.md

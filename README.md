@@ -1,144 +1,105 @@
-# Aweb team template: company six-surface team
+# Company surfaces team operating pattern
 
-A canonical multi-agent template for running a company with AI agents, modeled after `ai.aweb`.
+This repository replaces the old monolithic team template with a deployable
+**team operating pattern** for running a company with AI agents.
 
-This template is meant to be used with the `aw` CLI.
+Choose this pattern when you want durable agents organized by customer/company
+surface:
 
-## Install `aw`
+- direction;
+- engineering;
+- operations;
+- support;
+- outreach;
+- analytics;
+- task-scoped developer instances for code changes.
 
-```bash
-npm install -g @awebai/aw
-aw version
-```
+The pattern gives you **souls, roles, skills, playbooks, and adapter notes**. You
+then explicitly create concrete instances when you need them.
 
-## Bootstrap
-
-Run from the root of the project git repo where the company agents should work.
-
-This template models a stable company org (six persistent “surface” agents) plus at least one developer worktree agent for code changes.
-
-### Recommended: repo-local agents layout
-
-```bash
-aw agents bootstrap https://github.com/awebai/aweb-team-company-surfaces.git \
-  --username <username> \
-  --identity-prefix <you>
-```
-
-If you want hosted onboarding prompts, omit `--username`. If your team already
-exists, ask a teammate for an invite and run:
-
-```bash
-aw agents provision --invite-token <token> --identity-prefix <you>
-```
-
-Bootstrap allocates per-human aliases from `--identity-prefix` and the naming
-policy in `team.yaml`. The committed template stays identity-free.
-
-Bootstrap creates `./agents/` in the project repo and provisions one home per
-responsibility under:
-
-- `agents/home/direction/`
-- `agents/home/engineering/`
-- `agents/home/operations/`
-- `agents/home/support/`
-- `agents/home/outreach/`
-- `agents/home/analytics/`
-- `agents/home/developer/`
-
-The developer responsibility also gets an isolated git worktree under
-`agents/worktrees/developer/`.
-
-Then start your agents:
-
-```bash
-cd agents/home/direction
-claude
-
-cd ../engineering
-claude
-
-cd ../developer
-codex
-```
-
-## Real-time awakenings for mail/chat (recommended)
-
-By default, agents do not automatically wake up when they receive aweb mail/chat.
-
-Without a wake-up path, you must ask them to check:
-
-```bash
-aw mail inbox
-aw chat pending
-```
-
-Solutions:
-
-- **Claude Code**: install the channel plugin from inside `claude`:
-  ```
-  /plugin marketplace add awebai/claude-plugins
-  /plugin install aweb-channel@awebai-marketplace
-  ```
-  then restart with:
-  ```bash
-  claude --dangerously-load-development-channels plugin:aweb-channel@awebai-marketplace
-  ```
-
-- **Codex**:
-  ```bash
-  aw run codex
-  ```
-
-- **Pi**:
-  ```bash
-  pi install npm:@awebai/pi@latest
-  ```
-
-## Related skills and templates
-
-If your coding agent supports aweb skills (for example through `@awebai/pi`), load these when useful:
-
-- `aweb-bootstrap` — choose the right team source, repo-local layout, worktree-agent policy, and rerun safety.
-- `aweb-coordination` — day-to-day work loop, claims, handoffs, and shared state.
-- `aweb-messaging` — mail/chat response policy and wake-up events.
-- `aweb-team-membership` — invites, active team, certificates, hosted vs BYOT, and addressability.
-- `aweb-identity` — identity, custody, `did:key`/`did:aw`, key rotation, and inbound mode.
-
-Other maintained templates:
-
-- [`aweb-team-coord-worktrees`](https://github.com/awebai/aweb-team-coord-worktrees) — one coordinator plus developer/reviewer worktree agents.
-
-## Structure
+## What this repo contains
 
 ```text
-team.yaml                  # maps responsibilities to roles, identity scope, home_template, and work binding
-
-docs/team.md               # shared team instructions installed with aw instructions set
-
-roles/*.md                 # operational playbooks installed as aw roles bundle
-
-home/<responsibility>/     # source template for each generated agent home
+resource-pack.yaml             Manifest for the operating pattern
+resources/instructions.md      Team-wide operating instructions
+resources/roles/*.md           Role playbooks for aweb roles
+resources/souls/*              Durable agent bodies: soul.yaml + AGENTS.md + memory dirs
+skills/*                       Reusable procedures agents may load
+examples/deploy.md             How to install the pattern into your project
+examples/create-instance.md    How to create one concrete agent instance
+adapters/*                     Harness notes for Claude Code, Codex, and Pi
+scripts/install-local.sh       Explicit filesystem install helper; no .aw mutation
+scripts/build-roles-bundle.py  Builds a roles JSON bundle from Markdown roles
 ```
 
-Responsibilities are directory names (e.g. `engineering`, `operations`), not
-fixed identities. `team.yaml` stays identity-free; final aliases and addresses
-are planned per human from `--identity-prefix` and the naming policy.
+## Important boundary
 
-Developer worktree agents are intentionally separate from the persistent org:
+This repo does **not** contain `.aw`, private keys, DIDs, certificates, aliases,
+team IDs, invite tokens, generated worktrees, or generated instance directories.
+It does not create identities or git worktrees behind your back.
 
-- The org stays stable over time.
-- Developers come and go as local worktrees.
-- Code edits happen in `agents/worktrees/` so agents do not step on the shared checkout.
+## Deploy into your project
 
-After a one-command bootstrap (hosted or BYOT auto-provision), you should see developer worktree agent directories like:
+From this repository:
 
-- `agents/worktrees/developer/`
+```bash
+./scripts/install-local.sh /path/to/your/project
+```
 
-That is where code changes should be made. The six persistent surface homes in
-`agents/home/` each get a `work` symlink for visibility and context, but the
-worktree agents are the isolation boundary for parallel code edits.
+That copies reviewable resources into your project:
+
+```text
+/path/to/your/project/
+  souls/direction/
+  souls/engineering/
+  souls/operations/
+  souls/support/
+  souls/outreach/
+  souls/analytics/
+  souls/developer/
+  .agents/skills/self-maintenance/
+  .agents/skills/spawn-instance/
+  team-operating-patterns/company-surfaces/
+    instructions.md
+    roles-bundle.json
+    resource-pack.yaml
+```
+
+Then connect/publish with released aweb flows:
+
+1. Create or choose your team in the dashboard.
+2. From each workspace/instance directory, run the exact dashboard-generated
+   `AWEB_API_KEY=... AWEB_URL=... aw init ...` command for that agent.
+3. Publish shared context from the project root:
+
+   ```bash
+   aw instructions set --body-file team-operating-patterns/company-surfaces/instructions.md
+   aw roles set --bundle-file team-operating-patterns/company-surfaces/roles-bundle.json
+   aw roles show --all-roles
+   ```
+
+See [examples/deploy.md](examples/deploy.md) for the full flow.
+
+## Create instances explicitly
+
+Create concrete agent instances only when needed. For a task-scoped developer:
+
+```bash
+git worktree add instances/dev-task-123 -b dev-task-123
+cd instances/dev-task-123
+# Run the dashboard-generated aw init/connect command for alias dev-task-123.
+ln -sfn ../../souls/developer/AGENTS.md AGENTS.md
+```
+
+See [examples/create-instance.md](examples/create-instance.md).
+
+## Legacy note
+
+The old version of this repository was input for a monolithic setup command.
+That path is obsolete/legacy compatibility. This repository is now a
+resource-pack/team-operating-pattern source: copy/publish resources deliberately,
+then create identities and worktrees explicitly.
 
 ## License
 
-This template is open source under the [MIT License](./LICENSE).
+MIT. Fork freely and adapt the pattern to your team.
