@@ -1,8 +1,9 @@
 # Company surfaces team
 
-This operating pattern models a company as owned surfaces plus peer collaboration.
-Each surface has a durable soul that owns artifacts and keeps its work legible.
-The outcome belongs to everyone.
+This team was created from the `company-surfaces` blueprint. It models a
+company as owned surfaces plus peer collaboration. Each surface has a durable
+soul that owns artifacts and keeps its work legible. The outcome belongs to
+everyone. The full model is in `agents/docs/team-architecture.md`.
 
 ## The surfaces
 
@@ -41,7 +42,7 @@ Minimum expectations:
 
 ## Developer worktrees
 
-This pattern keeps surface souls persistent, and puts code changes in explicit
+This team keeps surface souls persistent, and puts code changes in explicit
 developer instances/worktrees.
 
 Why:
@@ -50,6 +51,14 @@ Why:
 - Developers can come and go without changing the org model.
 - Each developer works in an isolated git worktree to avoid collisions.
 
-Create developer instances only when needed. Use normal `git worktree` commands
-and connect each workspace to aweb with a dashboard-generated `aw init` command.
-Do not rely on hidden worktree creation.
+Create developer instances only when needed — on explicit human request or a
+documented workflow step — using the `spawn-instance` skill in
+`.agents/skills/`. Retire one-shot instances when their branch lands.
+
+## Souls
+
+- `agents/souls/<role>/` are the durable, committed agent bodies; they grow
+  with the team (docs, decisions, memory) per the `self-maintenance` skill.
+- Never edit your own AGENTS.md or role; those are human/review-owned.
+- `agents/instances/<name>/` are gitignored runnable copies with their own
+  identity. Do not overwrite another agent's workspace state or `.aw/`.

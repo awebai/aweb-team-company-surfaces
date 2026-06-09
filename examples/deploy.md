@@ -1,23 +1,24 @@
-# Deploy this operating pattern
+# Create a team from this blueprint
 
-This is an explicit, reviewable deployment. It does not create `.aw` state,
-identities, worktrees, or branches for you.
+This is an explicit, reviewable setup. Nothing here creates `.aw` state,
+identities, worktrees, or branches behind your back.
 
-Assumption: you already have a git repo or directory for your project.
+Assumption: you have a git repo for your project.
 
-## 0. Agent-first setup prompt
+## 0. Agent-first prompt
 
-The intended use is that you point your agent at this pattern repo:
+The intended use is that you point your agent at this blueprint:
 
-> Use `https://github.com/awebai/aweb-team-company-surfaces` as the team
-> operating pattern for this repo. Read its `AGENTS.md` and
-> `skills/bootstrapping-a-team/SKILL.md`. Set up the direction surface first
-> using explicit aweb/dashboard init steps; do not create developer worktrees
+> Use `https://github.com/awebai/aweb-team-company-surfaces` as the
+> blueprint for this repo. Read its `AGENTS.md` and follow
+> `skills/create-team/SKILL.md`. Set up the direction surface first using
+> explicit aweb/dashboard init steps; do not create the other instances
 > until I ask.
 
-The remaining steps are the procedure the applying agent should follow.
+The remaining steps are the procedure the agent follows — they work the same
+if you run them yourself.
 
-## 1. Install resources into your project
+## 1. Install the resources into your repo
 
 ```bash
 git clone https://github.com/awebai/aweb-team-company-surfaces.git
@@ -25,87 +26,103 @@ git clone https://github.com/awebai/aweb-team-company-surfaces.git
 cd /path/to/your/project
 ```
 
-Review the copied files before committing them:
+Review the copied files:
 
 ```bash
 git status --short
-find souls team-operating-patterns/company-surfaces .agents/skills -maxdepth 3 -type f | sort
+find agents .agents -type f | sort
 ```
 
-The install step should create identity-free pattern resources only. It should
-not create `.aw`, `instances/`, git branches, or git worktrees. An agent may use
-`scripts/install-local.sh` for this copy after confirming it will not overwrite
-existing target paths.
+The install copies identity-free team resources only — souls, roles,
+instructions, docs, skills, and the launch helper. It does not create `.aw`,
+instances, branches, or worktrees. The blueprint clone itself is disposable
+after this step.
 
-## 2. Keep future instances local
+## 2. Keep instances out of git, commit the rest
 
-Concrete instances are local workspaces, not pattern source. Ignore them locally:
+Instances carry private identity and are machine-specific. Append to your
+`.gitignore`:
 
-```bash
-printf '/instances/\n' >> .git/info/exclude
+```text
+/agents/instances/
 ```
 
-Use `.git/info/exclude` for the first setup so the helper does not silently edit
-your project `.gitignore`. If your team wants `/instances/` to be a repo-wide
-convention, you can later add it to `.gitignore` deliberately in a normal commit.
-
-## 3. Commit the reusable pattern resources
-
-Commit only reviewable, identity-free files:
+Then commit the team resources:
 
 ```bash
-git add souls .agents/skills team-operating-patterns/company-surfaces
-git commit -m "Add company surfaces operating pattern"
+git add agents .agents .gitignore
+git commit -m "Add company-surfaces team from blueprint"
 ```
 
-Never commit `.aw`, invite tokens, private keys, generated certificates, or local
-instance/worktree directories.
-
-## 4. Create your first concrete instance
-
-Usually create one surface first, such as direction:
+For Claude Code, also link the skills dir before committing:
 
 ```bash
-mkdir -p instances/direction
-cd instances/direction
+ln -sfn .agents/skills .claude/skills
+git add .claude
+```
+
+Never commit `.aw`, invite tokens, private keys, certificates, or instance
+directories.
+
+## 3. Create your first instance: direction
+
+```bash
+mkdir -p agents/instances/direction
+cd agents/instances/direction
 ln -sfn ../../souls/direction/AGENTS.md AGENTS.md
-ln -sfn ../.. work
+ln -sfn ../../.. work
+ln -sfn AGENTS.md CLAUDE.md   # only if using Claude Code
 ```
 
-Do not link a soul into the project root as `AGENTS.md` unless the human
-explicitly wants that and the file does not already have project meaning.
+Do **not** link a soul into the project root as `AGENTS.md`; many repos
+already use that file for their own instructions.
 
-## 5. Connect the instance to aweb
+## 4. Connect direction to aweb
 
-Use the dashboard for hosted setup. Create a team or choose an existing one, then
-use the dashboard's connect-agent flow for the instance.
-
-The dashboard will print a released-safe command shaped like:
+Use the dashboard for hosted setup: create a team or choose an existing one,
+then use the dashboard's connect-agent flow. It prints a command shaped
+like:
 
 ```bash
 AWEB_API_KEY=... AWEB_URL=... aw init ...
 ```
 
-Run that exact command from the instance directory. Do not commit the generated
-`.aw` directory.
-
-## 6. Publish shared instructions and roles
-
-From the project root after at least one workspace is connected:
+Run that exact command from `agents/instances/direction/`. Do not commit the
+generated `.aw` directory. Verify:
 
 ```bash
-cd ../..
-aw instructions set --body-file team-operating-patterns/company-surfaces/instructions.md
-aw roles set --bundle-file team-operating-patterns/company-surfaces/roles-bundle.json
+aw workspace status
+aw whoami
+```
+
+## 5. Publish shared instructions and roles
+
+From the connected direction home:
+
+```bash
+aw instructions set --body-file ../../instructions.md
+aw roles set --bundle-file ../../roles-bundle.json
 aw roles show --all-roles
 ```
 
-The Markdown role sources are also copied for review at:
+Where the installed CLI supports it, you can publish one role at a time
+instead: `aw roles add support --title "Support" --playbook-file
+../../roles/support.md`.
 
-```text
-team-operating-patterns/company-surfaces/roles/
+## 6. Start direction
+
+```bash
+cd agents/instances/direction
+claude
 ```
 
-## 7. Add developer instances later
+If you use Pi, Codex, or another harness, see `adapters/` and adapt the
+launch command. The identity/workspace setup stays explicit either way.
 
-Create them only when needed. See [create-instance.md](create-instance.md).
+## 7. Grow the team later
+
+Connect the other surfaces (engineering, operations, support, outreach,
+analytics) the same way as you need them, and let the team spawn developer
+instances when work needs them, using the `spawn-instance` skill installed
+at `.agents/skills/spawn-instance/`. See
+[create-instance.md](create-instance.md).

@@ -1,64 +1,88 @@
 # Create a concrete instance
 
-A soul is the durable body in `souls/<role>/`. An instance is a concrete
-workspace with its own aweb identity and optional git worktree.
+A soul is the durable body in `agents/souls/<role>/`. An instance is a
+runnable copy in `agents/instances/<name>/` with its own aweb identity: a
+**home** (body symlinked to the soul, `.aw` identity) plus a **work**
+location (the main checkout for surface agents, or its own git worktree for
+developer instances).
 
-Create instances only when you need them. Keep them local with:
+The canonical procedure is the `spawn-instance` skill installed at
+`.agents/skills/spawn-instance/` — a connected instance invites the new one
+and wires everything in one block. This file shows the manual shape of what
+it does, and the dashboard fallback when no connected instance exists yet.
 
-```bash
-printf '/instances/\n' >> .git/info/exclude
-```
+Instances are gitignored (`/agents/instances/` in `.gitignore`). Aliases:
+bare role for the standing surfaces (`direction`, `support`),
+`developer-<purpose>` for per-task developer instances.
 
-## Surface instance
+## From a connected instance (normal path)
 
-Surface agents such as direction, support, outreach, analytics, engineering, and
-operations often work from a local instance directory pointing at the main
-checkout.
+Run the prepare block in `.agents/skills/spawn-instance/SKILL.md` from your
+own instance home. It invites the new member (`aw id team invite`), accepts
+in the new home (`aw id team accept-invite` + `aw init`), links the body to
+the soul, and creates the work location the soul calls for.
 
-```bash
-cd /path/to/your/project
-mkdir -p instances/direction
-cd instances/direction
-ln -sfn ../../souls/direction/AGENTS.md AGENTS.md
-ln -sfn ../.. work
+## Dashboard fallback (first instance, or no inviter available)
 
-# Run the dashboard-generated aw init/connect command here for the chosen alias.
-```
-
-If your harness expects a different instruction filename, add that adapter link
-explicitly, for example:
-
-```bash
-ln -sfn AGENTS.md CLAUDE.md
-```
-
-Use the soul matching the alias/responsibility you are connecting. Do not replace
-a project-root `AGENTS.md` unless the human explicitly wants that.
-
-## Developer worktree instance
-
-Commit or stash your current project changes before adding a git worktree.
+For a surface, e.g. support:
 
 ```bash
 cd /path/to/your/project
-git worktree add instances/dev-task-123 -b dev-task-123
-cd instances/dev-task-123
+mkdir -p agents/instances/support
+cd agents/instances/support
+ln -sfn ../../souls/support/AGENTS.md AGENTS.md
+ln -sfn ../../.. work
+ln -sfn AGENTS.md CLAUDE.md   # only if using Claude Code
+
+# Run the dashboard-generated AWEB_API_KEY=... AWEB_URL=... aw init ... here.
+```
+
+For a developer instance, the work location is its own worktree instead of
+the symlink:
+
+```bash
+cd /path/to/your/project
+mkdir -p agents/instances/developer-authflow
+cd agents/instances/developer-authflow
 ln -sfn ../../souls/developer/AGENTS.md AGENTS.md
-ln -sfn AGENTS.md CLAUDE.md  # only if using Claude Code
-
-# Run the dashboard-generated aw init/connect command here for alias dev-task-123.
+# Run the dashboard-generated aw init command here, then:
+git -C ../../.. worktree add "$(pwd)/work" -b developer-authflow
 ```
 
-## Clean up
+Commit or stash project changes before adding a git worktree.
 
-Before deleting an instance, preserve useful branch/soul changes and revoke or
-remove the team membership through the dashboard or your team's chosen admin
-flow. Then remove the explicit worktree:
+## Launch
+
+From the instance home, with the soul's runtime (`soul.yaml`):
 
 ```bash
-git worktree remove instances/dev-task-123
-git branch -D dev-task-123  # only if the branch is no longer needed
+cd agents/instances/support && claude       # surfaces default to claude
+cd agents/instances/developer-authflow && codex   # developer defaults to codex
 ```
 
-For a non-worktree instance such as `instances/direction`, remove the directory
-after preserving any useful local files and revoking/removing membership.
+Or use the shared helper:
+
+```bash
+.agents/bin/launch-session.sh agents/instances/support --claude --tmux
+```
+
+> ⚠️ Never move or rename an instance home after `aw init` — the workspace
+> is registered at its path. Re-mint in place to relocate.
+
+## Retire
+
+One-shot developer instances are retired when their branch lands. From the
+spawner, after consuming the result:
+
+```bash
+name=developer-authflow
+inst="agents/instances/$name"
+( cd "$inst" && aw workspace delete "$name" )
+git worktree remove "$inst/work" --force 2>/dev/null
+rm -rf "$inst"
+git branch -D "$name" 2>/dev/null; git worktree prune
+```
+
+Preserve useful branch or soul changes first. Use `aw workspace delete`, not
+`aw id team leave` (leave refuses an identity's only team). Standing surface
+instances are long-running and are not retired this way.

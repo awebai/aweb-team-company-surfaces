@@ -1,16 +1,44 @@
 ---
 name: self-maintenance
-description: Maintain a durable company-surface soul by recording reusable docs, decisions, and memory without storing identity state or secrets.
+description: How any agent grows its soul as it works — adding to its docs, decisions, memory, and skills (but never its AGENTS.md or role). Use whenever you learn something durable mid-work that a future instance of you should keep.
 ---
 
 # Maintain your soul
 
-Record durable knowledge only when it changes what future instances should do.
-Use the soul directory:
+Your **soul** (`agents/souls/<your-role>/`) is your durable body — it
+travels and grows with the repo, so a fresh session of you keeps what
+earlier sessions learned. As you work, when you hit something durable worth
+keeping, write it into your soul. That's how the team gets short, focused
+sessions without losing knowledge between them.
 
-- `docs/` for reference notes;
-- `decisions/` for durable choices;
-- `memory/` for short facts that change future behavior.
+## What you grow
 
-Do not record routine progress. Do not store secrets, invite tokens, private
-keys, `.aw` state, DIDs, addresses, or certificates.
+- **Docs** (`docs/`) — reference notes on how things actually work.
+- **Decisions** (`decisions/`) — durable choices/stances you commit to.
+- **Memory** (`memory/<slug>.md`, indexed in `MEMORY.md`) — single durable
+  facts.
+- **Skills** (`.agents/skills/<name>/SKILL.md`) — reusable procedures you'll
+  need again; create or change them when a real, recurring procedure
+  appears.
+
+## What you must NOT change
+
+**Never edit your `AGENTS.md` or your role.** Those define who you are and
+how you operate — deliberate, human/review-owned, not something you rewrite
+mid-work. Grow your *knowledge*; leave your *identity* alone.
+
+Never store secrets, invite tokens, private keys, `.aw` state, DIDs,
+addresses, or certificates in a soul.
+
+## The bar — useful, not noisy
+
+Recording costs context every future instance must read and keep true. Write
+something down **only when both are true**: (1) it really matters and is
+durable, and (2) it would change what a future instance of you does. If it
+wouldn't, leave it in chat. Don't journal routine work, don't duplicate the
+code or git history, and prune what goes stale. A small, true soul beats a
+large, rotting one.
+
+Soul changes are commits like any other — they reach the main branch through
+the team's normal review path.
+

@@ -1,6 +1,6 @@
 schema_version: 1
 name: company-surfaces
-summary: Company operating pattern with durable surface souls and explicit developer worktree instances.
+summary: Company team blueprint with durable surface souls and explicit developer worktree instances.
 resources:
   instructions: resources/instructions.md
   roles:
@@ -19,13 +19,15 @@ resources:
     outreach: resources/souls/outreach
     analytics: resources/souls/analytics
     developer: resources/souls/developer
+  docs:
+    team-architecture: resources/docs/team-architecture.md
   playbooks:
     deploy: examples/deploy.md
     create-instance: examples/create-instance.md
 skills:
-  - skills/bootstrapping-a-team/SKILL.md
-  - skills/self-maintenance/SKILL.md
+  - skills/create-team/SKILL.md
   - skills/spawn-instance/SKILL.md
+  - skills/self-maintenance/SKILL.md
 adapters:
   claude: adapters/claude/README.md
   codex: adapters/codex/README.md

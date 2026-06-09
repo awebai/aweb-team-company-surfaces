@@ -8,15 +8,11 @@ fi
 
 src="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 dest="$1"
-pattern="company-surfaces"
-out="$dest/team-operating-patterns/$pattern"
 
 if [ ! -d "$dest" ]; then
   echo "target project does not exist: $dest" >&2
   exit 1
 fi
-
-mkdir -p "$dest/souls" "$dest/.agents/skills" "$out/roles"
 
 copy_dir() {
   local from="$1" to="$2"
@@ -36,34 +32,42 @@ copy_file() {
   cp "$from" "$to"
 }
 
+mkdir -p "$dest/agents/souls" "$dest/agents/roles" "$dest/agents/docs" \
+  "$dest/.agents/skills" "$dest/.agents/bin"
+
 for soul in direction engineering operations support outreach analytics developer; do
-  copy_dir "$src/resources/souls/$soul" "$dest/souls/$soul"
+  copy_dir "$src/resources/souls/$soul" "$dest/agents/souls/$soul"
 done
 
-for skill in bootstrapping-a-team self-maintenance spawn-instance; do
+for skill in spawn-instance self-maintenance; do
   copy_dir "$src/skills/$skill" "$dest/.agents/skills/$skill"
 done
 
-copy_file "$src/resources/instructions.md" "$out/instructions.md"
-copy_file "$src/resource-pack.yaml" "$out/resource-pack.yaml"
 for role_file in "$src"/resources/roles/*.md; do
-  copy_file "$role_file" "$out/roles/$(basename "$role_file")"
+  copy_file "$role_file" "$dest/agents/roles/$(basename "$role_file")"
 done
-"$src/scripts/build-roles-bundle.py" > "$out/roles-bundle.json"
+
+copy_file "$src/resources/instructions.md" "$dest/agents/instructions.md"
+copy_file "$src/resources/docs/team-architecture.md" "$dest/agents/docs/team-architecture.md"
+copy_file "$src/resources/bin/launch-session.sh" "$dest/.agents/bin/launch-session.sh"
+chmod +x "$dest/.agents/bin/launch-session.sh"
+"$src/scripts/build-roles-bundle.py" > "$dest/agents/roles-bundle.json"
 
 cat <<EOF
-Installed $pattern into $dest
+Installed the company-surfaces team resources into $dest
 
 Next steps:
   1. cd $dest
-  2. Keep concrete instances local:
-       printf '/instances/\n' >> .git/info/exclude
-  3. Review and commit the operating pattern resources:
-       git add souls .agents/skills team-operating-patterns/$pattern
-       git commit -m "Add company surfaces operating pattern"
-  4. Create/connect the first concrete surface instance:
-       see $src/examples/create-instance.md
-  5. After one workspace is connected with dashboard-generated aw init, publish:
-       aw instructions set --body-file team-operating-patterns/$pattern/instructions.md
-       aw roles set --bundle-file team-operating-patterns/$pattern/roles-bundle.json
+  2. Keep instances out of git:
+       printf '/agents/instances/\n' >> .gitignore
+  3. For Claude Code, link the skills dir:
+       ln -sfn .agents/skills .claude/skills
+  4. Review and commit the team resources:
+       git add agents .agents .claude .gitignore
+       git commit -m "Add company-surfaces team from blueprint"
+  5. Create and connect the first instance (usually direction):
+       see $src/examples/deploy.md steps 3-4
+  6. From the connected instance home, publish shared context:
+       aw instructions set --body-file ../../instructions.md
+       aw roles set --bundle-file ../../roles-bundle.json
 EOF
